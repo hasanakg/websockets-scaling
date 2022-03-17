@@ -15,6 +15,7 @@ import (
 )
 
 type Report struct {
+	Time                     int
 	ConnectionDurations      map[string]int
 	PingPoingEventDurations  map[string]int
 	TotalConnections         int
@@ -102,14 +103,24 @@ func main() {
 	totalConnections, _ := strconv.Atoi(os.Args[1])
 	batchSize, _ := strconv.Atoi(os.Args[2])
 	mode, _ := strconv.Atoi(os.Args[3])
+
+	f, err := os.OpenFile("log.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+
+	log.SetOutput(f)
+
 	// mode 0 => LB
 	// mode 1 => VM
 	go func() {
 		for showEstablishedConnections {
-			log.Println("ESTABLISHED CONNECTIONS: " + strconv.Itoa(report.TotalConnections))
+			// log.Println("ESTABLISHED CONNECTIONS: " + strconv.Itoa(report.TotalConnections))
 			time.Sleep(2 * time.Second)
 		}
 	}()
+	timing := time.Now()
 	for totalConnections > currentTotalConnections {
 		currentTotalConnections = currentTotalConnections + batchSize
 		for i := 1; i <= batchSize; i++ {
@@ -184,10 +195,11 @@ func main() {
 		time.Sleep(500 * time.Millisecond)
 	}
 	showEstablishedConnections = false
-	log.Println("DONE WITH ESTABLISHING CONNECTIONS: " + strconv.Itoa(report.TotalConnections))
-	log.Println("Press enter to send ping pong messages...")
+	// log.Println("DONE WITH ESTABLISHING CONNECTIONS: " + strconv.Itoa(report.TotalConnections))
+	// log.Println("Press enter to send ping pong messages...")
 	go func() {
 		for {
+			report.Time = int(time.Since(timing).Seconds())
 			log.Println(prettyPrint(report))
 			time.Sleep(2 * time.Second)
 		}
