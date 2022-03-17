@@ -1,21 +1,30 @@
 const uuid = require('uuid');
 const io = require('socket.io-client');
-const client = io('http://localhost:30080', {
+const client = io.connect('http://localhost:5000', {
   // port: 5000 - when using direct connection
   // port: 80 - when using Haproxy or Treafik Reverse Proxy
   // port: 30000 - when using plain k8s with NodePort
   // port: 30080, when using Traefik Ingress in k8s
-  path: '/wsk', // when using Traefik Ingress
-  // path: '/', // for all other scenarios
+  // path: '/wsk', // when using Traefik Ingress
+  path: '/', // for all other scenarios
   reconnection: true,
   reconnectionDelay: 500,
+  reconnectionDelayMax : 5000,
+  reconnectionAttempts: Infinity,
   transports: ['websocket']
 });
 
-const clientId = uuid.v4();
+// const clientId = uuid.v4();
 let disconnectTimer;
-
+let clientId = undefined;
 client.on('connect', function(){
+  if (!clientId) {
+    clientId = client.id;
+  }
+  else if (clientId != client.id) {
+    console.log('My ID is changed!?!?!');
+  }
+
   console.log("Connected!", clientId);
   setTimeout(function() {
     console.log('Sending first message');
@@ -31,10 +40,10 @@ client.on('okok', function(message) {
 
 client.on('disconnect', function(){
   console.log("Disconnected!");
-  disconnectTimer = setTimeout(function() {
-    console.log('Not reconnecting in 30s. Exiting...');
-    process.exit(0);
-  }, 10000);
+  // disconnectTimer = setTimeout(function() {
+  //   console.log('Not reconnecting in 30s. Exiting...');
+  //   process.exit(0);
+  // }, 10000);
 });
 
 client.on('error', function(err){

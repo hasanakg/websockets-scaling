@@ -10,8 +10,13 @@ spec:
     clientIP:
       timeoutSeconds: 10
   ports:
-    - protocol: TCP
+    - name: default
+      protocol: TCP
       port: 3000
       targetPort: 5000
+    - name: metrics
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
   #     nodePort: 30000
   # type: NodePort

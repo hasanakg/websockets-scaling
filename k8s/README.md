@@ -30,20 +30,12 @@ A Traefik `Ingress Route` can be used to proxy request towards websocket service
 
 ### microservices
 
-    # Launch Redis Deployment and Services
-    cd redis/
-    kubectl create -f redis-master-deployment.yaml, redis-slave-deployment.yaml
-    kubectl create -f redis-master-service.yaml, redis-slave-service.yaml
+    # Create with create script
+    ./create.sh
 
-    # Launch Websocket Deployment and Services
-    cd ../wsk
-    kubectl create -f wsk-deployment.yaml
-    kubectl create -f wsk-service.yaml
-
-    # Launch Traefik CRD, RBAC and Ingress
-    cd ../traefik
-    kubectl create -f crd.yaml
-    kubectl create -f rbac.yaml,traefik.yaml,ingress.yaml
+### k8s dashboard address
+Get token from create.sh output and login with following link
+https://localhost:31443/#/login
 
 ### client
 

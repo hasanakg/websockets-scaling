@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: wsk-deploy
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: wsk-base
@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: websocket-base
-          image: "sw360cab/wsk-base:0.1.1"
-          imagePullPolicy: IfNotPresent
+          image: "wsk-base"
+          imagePullPolicy: Never
           env:
           - name: REDIS_HOST
             value: "redis-master.default.svc"

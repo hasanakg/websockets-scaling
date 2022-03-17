@@ -24,6 +24,19 @@ The application is made of server and client part. Both are based `socket.io` li
 
 * it will send a message to a single server instance at connection time. **NOTE that this message should be received only by a single server instance.**
 
+### Go Client
+
+* Go to `go-ws-client` and init `go mod`
+
+      cd ./go-ws-client && go mod init client && go get github.com/graarh/golang-socketio && go get github.com/graarh/golang-socketio/transport
+* Then run client with arguments:
+
+  * Argument 1: Total connections
+  * Argument 2: Batch size
+  * Argument 3: Mode (0 for localhost, 1 for server)
+
+        go run ./go-ws-client/client.go 200 50 0
+
 ## Stack of Microservices Scenario
 
 See [Stack](stack/README.md) configuration.
